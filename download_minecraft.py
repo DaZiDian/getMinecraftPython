@@ -26,7 +26,7 @@ def download_file(url, filename):
         print(f'文件的SHA-256哈希值是: {readable_hash}')
 
     # 将哈希值保存到一个文件中
-    with open(filename + '.txt', 'w') as file:
+    with open(os.path.join(os.path.dirname(filename), 'sha256.txt'), 'w') as file:
         file.write(readable_hash)
 
 def download_minecraft_versions():
@@ -41,22 +41,7 @@ def download_minecraft_versions():
         response = requests.get(version_info['url'])
         version_detail = json.loads(response.text)
         # 下载jar文件
-        download_file(version_detail['downloads']['server']['url'], f'minecraft/versions/{version_info["id"]}/{version_info["id"]}.jar')
-
-def download_fabric_versions():
-    # 下载并解析JSON文件
-    response = requests.get('https://meta.fabricmc.net/v2/versions/loader')
-    fabric_versions = json.loads(response.text)
-
-    # 遍历所有的版本
-    for version_info in fabric_versions:
-        print(f"正在下载Fabric版本 {version_info['version']}...")
-        # 获取每个版本的详细信息
-        response = requests.get(version_info['stable'][-1]['url'])
-        version_detail = json.loads(response.text)
-        # 下载jar文件
-        download_file(version_detail['downloads']['server']['url'], f'fabric/versions/{version_info["version"]}/{version_info["version"]}.jar')
+        download_file(version_detail['downloads']['server']['url'], f'versions/Minecraft/{version_info["id"]}/{version_info["id"]}.jar')
 
 if __name__ == "__main__":
     download_minecraft_versions()
-    download_fabric_versions()
